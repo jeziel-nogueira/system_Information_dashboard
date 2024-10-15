@@ -2,13 +2,14 @@ import os from 'node:os';
 import osu from 'os-utils';
 import { getDiskInfo } from 'node-disk-info';
 
-// Função para obter o disco principal dependendo do sistema operacional
+// Função para obter o disco principal baseado no sistema operacional
 function getMainDisk(disks) {
     if (os.platform() === 'win32') {
+        // No Windows, buscar o disco 'C:'
         return disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
     } else {
-        // Para sistemas Unix, pode ser que o disco principal não esteja sempre em '/'
-        return disks.find(disk => disk.mounted === '/' || disk.filesystem.includes('ext'));
+        // Em sistemas Unix, buscar o disco montado em '/' ou outro disco que contenha 'root' ou 'mmc' (comum em Raspberry Pi)
+        return disks.find(disk => disk.mounted === '/' || /mmcblk|root/i.test(disk.filesystem));
     }
 }
 
@@ -73,31 +74,6 @@ export default function getMetrics() {
     }
 
     async function getMainDiskSize() {
-        // try {
-        //     const disks = await getDiskInfo();
-        //     let diskInfo;
-
-        //     if (os.platform() === 'win32') {
-        //         // No Windows, buscar o disco 'C:'
-        //         diskInfo = disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
-        //     } else {
-        //         // Em sistemas Unix, buscar o disco montado em '/' ou qualquer outro que contenha 'ssd' no nome
-        //         diskInfo = disks.find(disk => disk.mounted === '/' || /ssd/i.test(disk.filesystem));
-        //     }
-
-        //     if (diskInfo) {
-        //         return {
-        //             total: Math.round(diskInfo.blocks / 1073741824), // Total em GB
-        //             free: parseFloat(bytesToGB(diskInfo.available)) // Livre em GB
-        //         };
-        //     } else {
-        //         console.error('Disco principal não encontrado.');
-        //         return { total: 0, free: 0 };
-        //     }
-        // } catch (error) {
-        //     console.error('Erro ao obter informações do disco:', error);
-        //     return { total: 0, free: 0 };
-        // }
 
         let diskInfo;
 
@@ -114,6 +90,7 @@ export default function getMetrics() {
             console.error(err);
             return res.status(500).json({ error: 'Failed to retrieve disk info' });
         }
+
 
         return {
             total: Math.round(diskInfo.blocks / 1073741824), // Total em GB
