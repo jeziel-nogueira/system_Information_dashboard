@@ -11,7 +11,7 @@ function getMainDisk(disks) {
         // Em sistemas Unix, buscar o disco montado em '/' ou outros discos que contenham 'mmcblk' ou 'root'
         //return disks.find(disk => disk.mounted === /mmcblk|root/i.test( disk.filesystem) || '/' );
         //return disks.find(disk => disk.mounted === '/'  || disk.filesystem === '/');
-        return disks.find(disk => disk.mounted === /mmcblk0p2|root/i.test( disk.filesystem) || '/' );
+        return disks.find(disk => disk.mounted === '/' );
     }
 }
 
