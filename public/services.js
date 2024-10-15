@@ -75,8 +75,16 @@ export default function getMetrics() {
     async function getMainDiskSize() {
         try {
             const disks = await getDiskInfo();
-            const diskInfo = getMainDisk(disks);
-
+            let diskInfo;
+    
+            if (os.platform() === 'win32') {
+                // No Windows, buscar o disco 'C:'
+                diskInfo = disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
+            } else {
+                // Em sistemas Unix, buscar o disco montado em '/' ou qualquer outro que contenha 'ssd' no nome
+                diskInfo = disks.find(disk => disk.mounted === '/' || /ssd/i.test(disk.filesystem));
+            }
+    
             if (diskInfo) {
                 return {
                     total: Math.round(diskInfo.blocks / 1073741824), // Total em GB
@@ -91,6 +99,7 @@ export default function getMetrics() {
             return { total: 0, free: 0 };
         }
     }
+    
 
     return {
         getUserIp,
