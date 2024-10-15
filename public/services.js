@@ -9,7 +9,7 @@ function getMainDisk(disks) {
         return disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
     } else {
         // Em sistemas Unix, buscar o disco montado em '/' ou outros discos que contenham 'mmcblk' ou 'root'
-        return disks.find(disk => disk.mounted === '/' || /mmcblk|root/i.test(disk.filesystem));
+        return disks.find(disk => disk.mounted === '/' );
     }
 }
 
