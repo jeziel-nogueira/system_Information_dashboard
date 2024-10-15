@@ -75,7 +75,7 @@ export default function getMetrics() {
 
     async function getMainDiskSize() {
         let diskInfo;
-    
+
         try {
             // Obtém informações de todos os discos
             const disks = await getDiskInfo();
@@ -90,10 +90,14 @@ export default function getMetrics() {
             console.error(err);
             return { error: 'Failed to retrieve disk info' };
         }
-    
-        const totalGB = Math.round(diskInfo.blocks / 1073741824); // Total em GB (assumindo blocos de 4096 bytes)
-        const freeGB = parseFloat(bytesToGB(diskInfo.available)); // Livre em GB (assumindo blocos de 4096 bytes)
-    
+        
+        // Tamanho do bloco assumido a partir do resultado do `stat -f /`
+        const blockSize = 4096; // 4KB por bloco (confirmado)
+
+        // Cálculo do tamanho total e livre do disco
+        const totalGB = Math.round((diskInfo.blocks * blockSize) / (1024 ** 3)); // Total em GB
+        const freeGB = parseFloat(bytesToGB(diskInfo.available * blockSize)); // Livre em GB
+
         return {
             total: totalGB,
             free: freeGB
