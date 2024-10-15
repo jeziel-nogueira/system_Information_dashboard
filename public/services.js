@@ -8,8 +8,8 @@ function getMainDisk(disks) {
         // No Windows, buscar o disco 'C:'
         return disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
     } else {
-        // Em sistemas Unix, buscar o disco montado em '/' ou outro disco que contenha 'root' ou 'mmc' (comum em Raspberry Pi)
-        return disks.find(disk => disk.mounted === '/' || /mmcblk|root/i.test(disk.filesystem));
+        // Em sistemas Unix, buscar o disco montado em '/' ou outros discos que contenham 'root', 'mmc', ou 'ssd' (comum em Raspberry Pi)
+        return disks.find(disk => disk.mounted === '/' || /mmcblk|root|ssd|sda/i.test(disk.filesystem));
     }
 }
 
@@ -74,7 +74,6 @@ export default function getMetrics() {
     }
 
     async function getMainDiskSize() {
-
         let diskInfo;
 
         try {
@@ -88,17 +87,14 @@ export default function getMetrics() {
             }
         } catch (err) {
             console.error(err);
-            return res.status(500).json({ error: 'Failed to retrieve disk info' });
+            return { error: 'Failed to retrieve disk info' };
         }
-
 
         return {
             total: Math.round(diskInfo.blocks / 1073741824), // Total em GB
             free: parseFloat(bytesToGB(diskInfo.available)) // Livre em GB
-        }
-
+        };
     }
-
 
     return {
         getUserIp,
