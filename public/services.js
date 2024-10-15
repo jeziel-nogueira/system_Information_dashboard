@@ -9,7 +9,7 @@ function getMainDisk(disks) {
         return disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
     } else {
         // Em sistemas Unix, buscar o disco montado em '/' ou outros discos que contenham 'mmcblk' ou 'root'
-        return disks.find(disk => disk.mounted === '/' );
+        return disks.find(disk => disk.mounted === /mmcblk|root/i.test( disk.filesystem) || '/' );
     }
 }
 
@@ -35,7 +35,7 @@ export default function getMetrics() {
     }
 
     function getTotalRamMemory() {
-        return Math.round(os.totalmem() / 1073741824); // Total em GB
+        return Math.round(os.totalmem() / 1073741824);
     }
 
     function getFreeMemory() {
@@ -58,7 +58,7 @@ export default function getMetrics() {
         const osType = os.type();
         const osRelease = os.release();
         const osVersion = os.version();
-        return `${osType} ${osRelease} (${osVersion})`; // Formato legível
+        return `${osType} ${osRelease} (${osVersion})`; 
     }
 
     function getOsArchitecture() {
@@ -90,11 +90,9 @@ export default function getMetrics() {
             console.error(err);
             return { error: 'Failed to retrieve disk info' };
         }
-        
-        // Tamanho do bloco assumido a partir do resultado do `stat -f /`
-        const blockSize = 4096; // 4KB por bloco (confirmado)
 
-        // Cálculo do tamanho total e livre do disco
+        const blockSize = 4096; 
+
         const totalGB = Math.round((diskInfo.blocks * blockSize) / (1024 ** 3)); // Total em GB
         const freeGB = parseFloat(bytesToGB(diskInfo.available * blockSize)); // Livre em GB
 
