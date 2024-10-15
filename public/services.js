@@ -14,42 +14,56 @@ function getMainDisk(disks) {
 
 const bytesToGB = (bytes) => (bytes / (1024 ** 3)).toFixed(2);
 
-export default function getMetrics(){
+export default function getMetrics() {
 
-    function getUserIp(){
-        const eth0 = os.networkInterfaces();
-        return eth0.Ethernet[3].address;
+    function getUserIp() {
+        const interfaces = os.networkInterfaces();
+
+        // Loop pelas interfaces de rede
+        for (let iface in interfaces) {
+            // Verifica se a interface tem múltiplos endereços
+            for (let i = 0; i < interfaces[iface].length; i++) {
+                const alias = interfaces[iface][i];
+
+                // Verifica se o endereço é IPv4 e se não é um endereço interno (localhost)
+                if (alias.family === 'IPv4' && !alias.internal) {
+                    return alias.address;  // Retorna o IP da interface correta
+                }
+            }
+        }
+
+        return 'IP not found';  // Caso não encontre o IP
     }
 
-    function getTotalRamMemory(){
+    function getTotalRamMemory() {
         return Math.round(os.totalmem() / 1073741824);
     }
 
-    function getFreeMemory(){
+    function getFreeMemory() {
         return bytesToGB(os.freemem()); //Math.round(os.freemem() / 1073741824);
     }
 
-    function getCpuModel(){
+    function getCpuModel() {
         return os.cpus()[0].model;
     }
 
-    function getCpuMaxSpeed(){
+    function getCpuMaxSpeed() {
         return os.cpus()[0].speed;
     }
 
-    function getTotalCpuCores(){
+    function getTotalCpuCores() {
         return os.cpus().length;
     }
 
-    function getOsName(){
+    function getOsName() {
         return os.version();// `${os.type()}: ${os.version()}: ${os.release()}`;
     }
 
-    function getOsArchitecture (){
+    function getOsArchitecture() {
         return os.machine();
     }
 
-    function getCpuUsage(){
+    function getCpuUsage() {
         return new Promise((resolve, reject) => {
             osu.cpuUsage((usage) => {
                 resolve((usage * 100).toFixed(2));  // Multiplica por 100 para transformar em porcentagem
