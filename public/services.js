@@ -81,6 +81,7 @@ export default function getMetrics() {
             const disks = await getDiskInfo();
             // Seleciona o disco principal de acordo com o sistema operacional
             diskInfo = getMainDisk(disks);
+            console.log(diskInfo);
             
             if (!diskInfo) {
                 throw new Error('Disco principal não encontrado');
