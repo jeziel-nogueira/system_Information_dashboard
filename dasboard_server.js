@@ -18,7 +18,7 @@ APP.get('/metrics', async (req, res) => {
             cpu_max_speed: metrics.getCpuMaxSpeed(),
             cpu_usage : await metrics.getCpuUsage(),
             total_ram_memory: metrics.getTotalRamMemory(),
-            total_memory_free: metrics.getFreeMemory(),
+            total_ram_memory_free: metrics.getFreeMemory(),
             main_disk_size: await metrics.getMainDiskSize(),
             os_name: metrics.getOsName(),
             architecture: metrics.getOsArchitecture(),

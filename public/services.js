@@ -2,21 +2,8 @@ import os from 'node:os';
 import osu from 'os-utils';
 import { getDiskInfo } from 'node-disk-info';
 
-// Função para obter o disco principal baseado no sistema operacional
-function getMainDisk(disks) {
-    if (os.platform() === 'win32') {
-        // No Windows, buscar o disco 'C:'
-        return disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
-    } else {
-        // Em sistemas Unix, buscar o disco montado em '/' ou outros discos que contenham 'mmcblk' ou 'root'
-        //return disks.find(disk => disk.mounted === /mmcblk|root/i.test( disk.filesystem) || '/' );
-        //return disks.find(disk => disk.mounted === '/'  || disk.filesystem === '/');
-        return disks.find(disk => disk.mounted === '/' );
-    }
-}
-
-// Função para converter bytes em GB
-const bytesToGB = (bytes) => ((bytes * 1024) / 1073741824).toFixed(2);
+//const bytesToGB = (bytes) => ((bytes * 1024) / 1073741824).toFixed(2);
+const bytesToGB = (bytes) => (bytes / (1024 ** 3)).toFixed(2);
 
 export default function getMetrics() {
 
@@ -37,7 +24,7 @@ export default function getMetrics() {
     }
 
     function getTotalRamMemory() {
-        return Math.round(os.totalmem() / 1024);
+        return Math.round(os.totalmem() / 1073741824); 
     }
 
     function getFreeMemory() {
@@ -45,11 +32,11 @@ export default function getMetrics() {
     }
 
     function getCpuModel() {
-        return os.cpus()[0]?.model || 'Unknown CPU Model'; // Verifica se há CPUs
+        return os.cpus()[0]?.model || 'Unknown CPU Model';
     }
 
     function getCpuMaxSpeed() {
-        return os.cpus()[0]?.speed || 'Unknown Speed'; // Verifica se há CPUs
+        return os.cpus()[0]?.speed || 'Unknown Speed';
     }
 
     function getTotalCpuCores() {
@@ -77,29 +64,29 @@ export default function getMetrics() {
 
     async function getMainDiskSize() {
         let diskInfo;
+        let totalGB;
+        let freeGB;
 
         try {
-            // Obtém informações de todos os discos
             const disks = await getDiskInfo();
-            // Seleciona o disco principal de acordo com o sistema operacional
-            diskInfo = getMainDisk(disks);
-            console.log('Disk Info:', diskInfo); // Log detalhado das informações do disco
-            console.log('Disk Blocks:', diskInfo.blocks);
+
+            if (os.platform() === 'win32') {
+                diskInfo = disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
+                console.log(diskInfo);
+
+                totalGB = Math.round(diskInfo.blocks / 1073741824)
+                freeGB = parseFloat((diskInfo.available /(1024 ** 3)).toFixed(2))
+            } else {
+
+                diskInfo = disks.find(disk => disk.mounted === '/' );
+                totalGB = Math.round((diskInfo.blocks * 1024) / 1073741824);
+                freeGB = parseFloat(((diskInfo.available * 1024) / 1073741824).toFixed(2));
+            }            
             
-            if (!diskInfo) {
-                throw new Error('Disco principal não encontrado');
-            }
         } catch (err) {
             console.error(err);
             return { error: 'Failed to retrieve disk info' };
         }
-
-        //60843416
-
-        // Tamanho do bloco assumido a partir do resultado do `stat -f /`
-        const blockSize = 4096; // 4KB por bloco (confirmado)
-        const totalGB = Math.round((diskInfo.blocks * 1024) / 1073741824); // Total em GB
-        const freeGB = parseFloat(bytesToGB(diskInfo.available)); // Livre em GB
 
         return {
             total: totalGB,

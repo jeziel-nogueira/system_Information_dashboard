@@ -143,7 +143,7 @@ setInterval(async () => {
   setCpuCores(metrics.cpu_cores);
   setCpuModel(metrics.cpu_model);
   setCpuMaxSpeed(metrics.cpu_max_speed);
-  setTotalRamMemory(metrics.total_ram_memory, metrics.total_memory_free);
+  setTotalRamMemory(metrics.total_ram_memory, metrics.total_ram_memory_free);
   setMainDiskSize(metrics.main_disk_size);
   setOsName(metrics.os_name);
   setOsArchitecture(metrics.architecture);
