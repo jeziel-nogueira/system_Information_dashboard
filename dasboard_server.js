@@ -1,11 +1,23 @@
 import express from 'express';
 import getMetrics from './public/services.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const PORT = 3001;
 const APP = express();
 
-APP.use(express.static('public'));
+// Simular o comportamento de __dirname em ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+APP.use(express.static(path.join(__dirname, 'public')));
+
+// Rota principal do dashboard
+APP.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Rota para retornar dados JSON
 APP.get('/metrics', async (req, res) => {
     const metrics = getMetrics();
 
