@@ -96,7 +96,7 @@ export default function getMetrics() {
 
         // Tamanho do bloco assumido a partir do resultado do `stat -f /`
         const blockSize = 4096; // 4KB por bloco (confirmado)
-        const totalGB = Math.round((diskInfo.blocks / blockSize) ); // Total em GB
+        const totalGB = Math.round((diskInfo.blocks * blockSize) / (1024 ** 3)); // Total em GB
         const freeGB = parseFloat(bytesToGB(diskInfo.available / blockSize)); // Livre em GB
 
         return {
