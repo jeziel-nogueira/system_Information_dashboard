@@ -73,33 +73,53 @@ export default function getMetrics() {
     }
 
     async function getMainDiskSize() {
+        // try {
+        //     const disks = await getDiskInfo();
+        //     let diskInfo;
+
+        //     if (os.platform() === 'win32') {
+        //         // No Windows, buscar o disco 'C:'
+        //         diskInfo = disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
+        //     } else {
+        //         // Em sistemas Unix, buscar o disco montado em '/' ou qualquer outro que contenha 'ssd' no nome
+        //         diskInfo = disks.find(disk => disk.mounted === '/' || /ssd/i.test(disk.filesystem));
+        //     }
+
+        //     if (diskInfo) {
+        //         return {
+        //             total: Math.round(diskInfo.blocks / 1073741824), // Total em GB
+        //             free: parseFloat(bytesToGB(diskInfo.available)) // Livre em GB
+        //         };
+        //     } else {
+        //         console.error('Disco principal não encontrado.');
+        //         return { total: 0, free: 0 };
+        //     }
+        // } catch (error) {
+        //     console.error('Erro ao obter informações do disco:', error);
+        //     return { total: 0, free: 0 };
+        // }
+
         try {
+            // Obtém informações de todos os discos
             const disks = await getDiskInfo();
-            let diskInfo;
-    
-            if (os.platform() === 'win32') {
-                // No Windows, buscar o disco 'C:'
-                diskInfo = disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
+            // Seleciona o disco principal de acordo com o sistema operacional
+            diskInfo = getMainDisk(disks);
+
+            if (!diskInfo) {
+                throw new Error('Disco principal não encontrado');
             } else {
-                // Em sistemas Unix, buscar o disco montado em '/' ou qualquer outro que contenha 'ssd' no nome
-                diskInfo = disks.find(disk => disk.mounted === '/' || /ssd/i.test(disk.filesystem));
-            }
-    
-            if (diskInfo) {
                 return {
                     total: Math.round(diskInfo.blocks / 1073741824), // Total em GB
                     free: parseFloat(bytesToGB(diskInfo.available)) // Livre em GB
-                };
-            } else {
-                console.error('Disco principal não encontrado.');
-                return { total: 0, free: 0 };
+                }
             }
-        } catch (error) {
-            console.error('Erro ao obter informações do disco:', error);
-            return { total: 0, free: 0 };
+        } catch (err) {
+            console.error(err);
+            return 'Failed to retrieve disk info';
         }
+
     }
-    
+
 
     return {
         getUserIp,
