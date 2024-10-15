@@ -1,17 +1,18 @@
-import os from 'node:os'
+import os from 'node:os';
 import osu from 'os-utils';
 import { getDiskInfo } from 'node-disk-info';
 
+// Função para obter o disco principal dependendo do sistema operacional
 function getMainDisk(disks) {
     if (os.platform() === 'win32') {
-        // No Windows, buscar o disco 'C:'
         return disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
     } else {
-        // Em sistemas Unix, buscar o disco montado em '/'
-        return disks.find(disk => disk.mounted === '/');
+        // Para sistemas Unix, pode ser que o disco principal não esteja sempre em '/'
+        return disks.find(disk => disk.mounted === '/' || disk.filesystem.includes('ext'));
     }
 }
 
+// Função para converter bytes em GB
 const bytesToGB = (bytes) => (bytes / (1024 ** 3)).toFixed(2);
 
 export default function getMetrics() {
@@ -19,54 +20,54 @@ export default function getMetrics() {
     function getUserIp() {
         const interfaces = os.networkInterfaces();
 
-        // Loop pelas interfaces de rede
         for (let iface in interfaces) {
-            // Verifica se a interface tem múltiplos endereços
             for (let i = 0; i < interfaces[iface].length; i++) {
                 const alias = interfaces[iface][i];
 
-                // Verifica se o endereço é IPv4 e se não é um endereço interno (localhost)
                 if (alias.family === 'IPv4' && !alias.internal) {
-                    return alias.address;  // Retorna o IP da interface correta
+                    return alias.address;
                 }
             }
         }
 
-        return 'IP not found';  // Caso não encontre o IP
+        return 'IP not found';
     }
 
     function getTotalRamMemory() {
-        return Math.round(os.totalmem() / 1073741824);
+        return Math.round(os.totalmem() / 1073741824); // Total em GB
     }
 
     function getFreeMemory() {
-        return bytesToGB(os.freemem()); //Math.round(os.freemem() / 1073741824);
+        return bytesToGB(os.freemem());
     }
 
     function getCpuModel() {
-        return os.cpus()[0].model;
+        return os.cpus()[0]?.model || 'Unknown CPU Model'; // Verifica se há CPUs
     }
 
     function getCpuMaxSpeed() {
-        return os.cpus()[0].speed;
+        return os.cpus()[0]?.speed || 'Unknown Speed'; // Verifica se há CPUs
     }
 
     function getTotalCpuCores() {
-        return os.cpus().length;
+        return os.cpus().length || 0;
     }
 
     function getOsName() {
-        return os.version();// `${os.type()}: ${os.version()}: ${os.release()}`;
+        const osType = os.type();
+        const osRelease = os.release();
+        const osVersion = os.version();
+        return `${osType} ${osRelease} (${osVersion})`; // Formato legível
     }
 
     function getOsArchitecture() {
-        return os.machine();
+        return os.arch();
     }
 
     function getCpuUsage() {
         return new Promise((resolve, reject) => {
             osu.cpuUsage((usage) => {
-                resolve((usage * 100).toFixed(2));  // Multiplica por 100 para transformar em porcentagem
+                resolve((usage * 100).toFixed(2));
             });
         });
     }
@@ -76,24 +77,20 @@ export default function getMetrics() {
             const disks = await getDiskInfo();
             const diskInfo = getMainDisk(disks);
 
-            const info = {
-                total: Math.round(diskInfo.blocks / 1073741824),
-                free: parseFloat(bytesToGB(diskInfo.available))
+            if (diskInfo) {
+                return {
+                    total: Math.round(diskInfo.blocks / 1073741824), // Total em GB
+                    free: parseFloat(bytesToGB(diskInfo.available)) // Livre em GB
+                };
+            } else {
+                console.error('Disco principal não encontrado.');
+                return { total: 0, free: 0 };
             }
-
-            // if (diskInfo) {
-            //     console.log(`Espaço disponível: ${bytesToGB(diskInfo.available)} GB`);
-            //     console.log(`Tamanho total: ${bytesToGB(diskInfo.blocks)} GB`);
-            // } else {
-            //     console.log('Não foi possível encontrar o disco principal.');
-            // }
-            return info; // `${bytesToGB(diskInfo.available)}Gb free of ${Math.round(diskInfo.blocks / 1073741824)}Gb`;
         } catch (error) {
             console.error('Erro ao obter informações do disco:', error);
-            return 0;
+            return { total: 0, free: 0 };
         }
     }
-
 
     return {
         getUserIp,
@@ -106,5 +103,5 @@ export default function getMetrics() {
         getMainDiskSize,
         getOsName,
         getOsArchitecture,
-    }
+    };
 }
