@@ -8,8 +8,8 @@ function getMainDisk(disks) {
         // No Windows, buscar o disco 'C:'
         return disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
     } else {
-        // Em sistemas Unix, buscar o disco montado em '/' ou outros discos que contenham 'root', 'mmc', ou 'ssd' (comum em Raspberry Pi)
-        return disks.find(disk => disk.mounted === '/' || /mmcblk|root|rootfs|ssd|sda/i.test(disk.filesystem));
+        // Em sistemas Unix, buscar o disco montado em '/' ou outros discos que contenham 'mmcblk' ou 'root'
+        return disks.find(disk => disk.mounted === '/' || /mmcblk|root/i.test(disk.filesystem));
     }
 }
 
