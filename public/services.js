@@ -24,10 +24,12 @@ export default function getMetrics() {
     }
 
     function getTotalRamMemory() {
+        console.log(`Total mem: ${os.totalmem()}`)
         return Math.round(os.totalmem() / 1073741824); 
     }
 
     function getFreeMemory() {
+        console.log(`Free mem: ${os.freemem()}`)
         return bytesToGB(os.freemem());
     }
 
@@ -72,7 +74,6 @@ export default function getMetrics() {
 
             if (os.platform() === 'win32') {
                 diskInfo = disks.find(disk => disk.mounted === 'C:' || disk.filesystem === 'C:');
-                console.log(diskInfo);
 
                 totalGB = Math.round(diskInfo.blocks / 1073741824)
                 freeGB = parseFloat((diskInfo.available /(1024 ** 3)).toFixed(2))
