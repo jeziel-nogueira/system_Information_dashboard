@@ -2,7 +2,6 @@ import os from 'node:os';
 import osu from 'os-utils';
 import { getDiskInfo } from 'node-disk-info';
 
-//const bytesToGB = (bytes) => ((bytes * 1024) / 1073741824).toFixed(2);
 const bytesToGB = (bytes) => (bytes / (1024 ** 3)).toFixed(2);
 
 export default function getMetrics() {
@@ -24,12 +23,10 @@ export default function getMetrics() {
     }
 
     function getTotalRamMemory() {
-        console.log(`Total mem: ${os.totalmem()}`)
         return Math.round(os.totalmem() / 1073741824); 
     }
 
     function getFreeMemory() {
-        console.log(`Free mem: ${os.freemem()}`)
         return bytesToGB(os.freemem());
     }
 
@@ -49,7 +46,8 @@ export default function getMetrics() {
         const osType = os.type();
         const osRelease = os.release();
         const osVersion = os.version();
-        return `${osType} ${osRelease} (${osVersion})`; 
+
+        return `${osType} (${osVersion})`; 
     }
 
     function getOsArchitecture() {

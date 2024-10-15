@@ -89,10 +89,7 @@ const doughnutChart = new Chart(ctx_doughnut, {
   }
 });
 
-function updateDiskChart(disk_info) {
-
-  console.log(disk_info);  
-  
+function updateDiskChart(disk_info) {  
   diskData.datasets[0].data = [
     disk_info.total - disk_info.free, disk_info.free
   ];
