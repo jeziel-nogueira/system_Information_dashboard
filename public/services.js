@@ -16,7 +16,7 @@ function getMainDisk(disks) {
 }
 
 // Função para converter bytes em GB
-const bytesToGB = (bytes) => (bytes / (1024 ** 3)).toFixed(2);
+const bytesToGB = (bytes) => (bytes / (1024 ** 2)).toFixed(2);
 
 export default function getMetrics() {
 
@@ -94,8 +94,10 @@ export default function getMetrics() {
             return { error: 'Failed to retrieve disk info' };
         }
 
-        const totalGB = Math.round(diskInfo.blocks / 1024); // Total em GB
-        const freeGB = parseFloat(bytesToGB(diskInfo.available)); // Livre em GB
+        // Tamanho do bloco assumido a partir do resultado do `stat -f /`
+        const blockSize = 4096; // 4KB por bloco (confirmado)
+        const totalGB = Math.round((diskInfo.blocks / blockSize) ); // Total em GB
+        const freeGB = parseFloat(bytesToGB(diskInfo.available / blockSize)); // Livre em GB
 
         return {
             total: totalGB,
