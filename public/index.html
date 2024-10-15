@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="container">
+        <div class="topbar">
+            <div class="logo">
+                <h2 id="os_name">System</h2>
+            </div>
+            <div class="user">
+                <h2 id="user_ip">IPV4:</h2>
+            </div>
+        </div>
+        
+        <div class="main">
+
+            <div class="cards">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="number" id="cpu_model_card">CPU Model</div>
+                        <div class="card-name">Cpu</div>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="number" id="total_ram_memory">Total Ram</div>
+                        <div class="card-name">Ram Memory</div>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fas fa-memory"></i>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="number" id="main_diskSize">HDD Size</div>
+                        <div class="card-name">HDD</div>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fas fa-hdd"></i>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="number" id="os_name_card">Os Version</div>
+                        <div class="number" id="os_architecture">architecture</div>
+                        <div class="card-name">SO</div>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts_sup">
+                <div class="chart">
+                    <h2 class="number" id="cpu_model">Cpu Model: </h2>
+                    <div class="cpu_details">
+                        <h3  id="cpu_total_cores">CPU Total Cores: </h2>
+                        <h3 id="cpu_max_speed">Cpu Max Frequncy: </h3>
+                    </div>
+                    <canvas id="line_Chart"></canvas>
+                </div>
+                <div class="chart" id="doughnut-chart">
+                    <h2>HDD Usage</h2>
+                    <canvas id="doughnut"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
