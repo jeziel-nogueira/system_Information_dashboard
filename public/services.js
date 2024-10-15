@@ -91,8 +91,8 @@ export default function getMetrics() {
             return { error: 'Failed to retrieve disk info' };
         }
     
-        const totalGB = Math.round((diskInfo.blocks * 1024) / (1024 ** 3)); // Total em GB (assumindo blocos de 4096 bytes)
-        const freeGB = parseFloat(bytesToGB(diskInfo.available * 1024)); // Livre em GB (assumindo blocos de 4096 bytes)
+        const totalGB = Math.round(diskInfo.blocks / 1073741824); // Total em GB (assumindo blocos de 4096 bytes)
+        const freeGB = parseFloat(bytesToGB(diskInfo.available)); // Livre em GB (assumindo blocos de 4096 bytes)
     
         return {
             total: totalGB,
