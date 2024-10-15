@@ -37,7 +37,7 @@ export default function getMetrics() {
     }
 
     function getTotalRamMemory() {
-        return Math.round(os.totalmem() / 1073741824);
+        return Math.round(os.totalmem() / 1024);
     }
 
     function getFreeMemory() {
@@ -94,7 +94,7 @@ export default function getMetrics() {
             return { error: 'Failed to retrieve disk info' };
         }
 
-        const totalGB = Math.round(diskInfo.blocks / 1073741824); // Total em GB
+        const totalGB = Math.round(diskInfo.blocks / 1024); // Total em GB
         const freeGB = parseFloat(bytesToGB(diskInfo.available)); // Livre em GB
 
         return {
