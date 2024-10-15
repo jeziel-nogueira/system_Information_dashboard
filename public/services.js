@@ -75,13 +75,13 @@ export default function getMetrics() {
 
     async function getMainDiskSize() {
         let diskInfo;
-
+    
         try {
             // Obtém informações de todos os discos
             const disks = await getDiskInfo();
             // Seleciona o disco principal de acordo com o sistema operacional
             diskInfo = getMainDisk(disks);
-            console.log(diskInfo);
+            console.log('Disk Info:', diskInfo); // Log detalhado das informações do disco
             
             if (!diskInfo) {
                 throw new Error('Disco principal não encontrado');
@@ -90,10 +90,13 @@ export default function getMetrics() {
             console.error(err);
             return { error: 'Failed to retrieve disk info' };
         }
-
+    
+        const totalGB = Math.round((diskInfo.blocks * 4096) / (1024 ** 3)); // Total em GB (assumindo blocos de 4096 bytes)
+        const freeGB = parseFloat(bytesToGB(diskInfo.available * 4096)); // Livre em GB (assumindo blocos de 4096 bytes)
+    
         return {
-            total: Math.round(diskInfo.blocks / 1073741824), // Total em GB
-            free: parseFloat(bytesToGB(diskInfo.available)) // Livre em GB
+            total: totalGB,
+            free: freeGB
         };
     }
 
