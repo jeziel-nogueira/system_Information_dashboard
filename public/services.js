@@ -99,6 +99,7 @@ export default function getMetrics() {
         //     return { total: 0, free: 0 };
         // }
 
+        let diskInfo;
         try {
             // Obtém informações de todos os discos
             const disks = await getDiskInfo();
