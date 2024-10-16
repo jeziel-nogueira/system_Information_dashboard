@@ -60,7 +60,7 @@ Caso não tenha o Node.js instalado, siga as instruções [aqui](https://docs.np
 ### Instalação
  1. Clone o repositório:
 >    ```bash
->    [npm -v](https://github.com/jeziel-nogueira/system_Information_dashboard.git)
+>    https://github.com/jeziel-nogueira/system_Information_dashboard.git
  2. Navegue até a pasta do projeto:
 >    ```bash
 >    cd system_Information_dashboard
