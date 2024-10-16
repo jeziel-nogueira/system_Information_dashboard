@@ -57,7 +57,7 @@ Verifique a instalação executando os comandos:
 >    npm -v
 Caso não tenha o Node.js instalado, siga as instruções [aqui](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) para instalar o Node.js e o npm.
 
-### Instalação
+### Obtendo o Projeto
  1. Clone o repositório:
 >    ```bash
 >    https://github.com/jeziel-nogueira/system_Information_dashboard.git
