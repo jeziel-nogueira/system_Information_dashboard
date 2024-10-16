@@ -60,7 +60,7 @@ Caso não tenha o Node.js instalado, siga as instruções [aqui](https://docs.np
 ### Obtendo o Projeto
  1. Clone o repositório:
 >    ```bash
->    https://github.com/jeziel-nogueira/system_Information_dashboard.git
+>    git clone https://github.com/seu-usuario/monitor-desempenho-servidor.git
  2. Navegue até a pasta do projeto:
 >    ```bash
 >    cd system_Information_dashboard
